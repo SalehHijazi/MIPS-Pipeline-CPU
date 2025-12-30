@@ -1,0 +1,34 @@
+# Compiled simulation files
+*.vvp
+pipeline_sim
+mips_cpu
+pipeline_*
+
+# Waveform files
+*.vcd
+*.fst
+*.lxt
+
+# Log files
+*.log
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Build artifacts
+*.o
+*.a
+
+# Simulation dumps
+*.dump
+
