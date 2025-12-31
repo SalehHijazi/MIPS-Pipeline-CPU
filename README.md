@@ -41,32 +41,22 @@ This project implements a fully functional 5-stage pipelined MIPS CPU processor 
 
 ## 📁 Project Structure
 
-```
 MIPS_Pipeline/
-├── README.md                          # This file
-├── LOAD_USE_HAZARD_EXPLANATION.md     # Detailed explanation of hazard handling
-│
-├── Core Modules/
-│   ├── mips_pipeline.v                # Top-level 5-stage pipeline module
-│   ├── alu.v                          # Arithmetic Logic Unit
-│   ├── reg_file.v                     # 32-register file
-│   ├── control_unit.v                 # Instruction decoder/control signal generator
-│   ├── data_mem.v                     # Data memory (256 words)
-│   └── inst_mem.v                     # Instruction memory (256 words)
-│
-├── Pipeline Registers/
-│   ├── if_id_reg.v                    # IF/ID pipeline register
-│   ├── id_ex_reg.v                    # ID/EX pipeline register
-│   ├── ex_mem_reg.v                   # EX/MEM pipeline register
-│   └── mem_wb_reg.v                   # MEM/WB pipeline register
-│
-├── Hazard Handling/
-│   ├── forwarding_unit.v             # Data forwarding logic
-│   └── hazard_detection_unit.v       # Load-Use hazard detection
-│
-└── Testbench/
-    └── pipeline_tb.v                  # Comprehensive testbench with verification
-```
+├── README.md                          # Project Documentation
+├── LOAD_USE_HAZARD_EXPLANATION.md     # Technical details on stalls
+├── mips_pipeline.v                    # Top-level CPU module
+├── pipeline_tb.v                      # Testbench
+├── alu.v                              # Arithmetic Logic Unit
+├── control_unit.v                     # Control Unit
+├── reg_file.v                         # Register File
+├── data_mem.v                         # Data Memory
+├── inst_mem.v                         # Instruction Memory
+├── hazard_detection_unit.v            # Load-Use Hazard Logic
+├── forwarding_unit.v                  # Data Forwarding Logic
+├── if_id_reg.v                        # Pipeline Register (IF/ID)
+├── id_ex_reg.v                        # Pipeline Register (ID/EX)
+├── ex_mem_reg.v                       # Pipeline Register (EX/MEM)
+└── mem_wb_reg.v                       # Pipeline Register (MEM/WB)```
 
 ## 🛠️ Technologies & Tools
 
