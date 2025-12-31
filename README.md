@@ -41,6 +41,7 @@ This project implements a fully functional 5-stage pipelined MIPS CPU processor 
 
 ## 📁 Project Structure
 
+```text
 MIPS_Pipeline/
 ├── README.md                          # Project Documentation
 ├── LOAD_USE_HAZARD_EXPLANATION.md     # Technical details on stalls
@@ -56,8 +57,7 @@ MIPS_Pipeline/
 ├── if_id_reg.v                        # Pipeline Register (IF/ID)
 ├── id_ex_reg.v                        # Pipeline Register (ID/EX)
 ├── ex_mem_reg.v                       # Pipeline Register (EX/MEM)
-└── mem_wb_reg.v                       # Pipeline Register (MEM/WB)```
-
+└── mem_wb_reg.v                       # Pipeline Register (MEM/WB)
 ## 🛠️ Technologies & Tools
 
 - **Hardware Description Language**: Verilog (IEEE 1364)
