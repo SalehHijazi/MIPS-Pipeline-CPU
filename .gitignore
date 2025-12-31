@@ -2,7 +2,14 @@
 *.vvp
 pipeline_sim
 mips_cpu
-pipeline_*
+pipeline_check
+pipeline_debug
+pipeline_final
+pipeline_full
+pipeline_fwd
+pipeline_hazard
+pipeline_sim
+pipeline_waveform.vcd
 
 # Waveform files
 *.vcd

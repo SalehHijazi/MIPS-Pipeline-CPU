@@ -225,17 +225,8 @@ See `LOAD_USE_HAZARD_EXPLANATION.md` for a detailed explanation of:
 
 ## 👨‍💻 Author
 
-**Your Name**  
+**Saleh Hijazi**  
 Computer Engineering Student / Hardware Engineer
-
-## 📄 License
-
-This project is open source and available for educational purposes.
-
-## 🙏 Acknowledgments
-
-- Based on MIPS architecture (MIPS Technologies)
-- Inspired by "Computer Organization and Design" by Patterson & Hennessy
 
 ---
 
