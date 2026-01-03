@@ -1,41 +1,13 @@
-# Compiled simulation files
-*.vvp
-pipeline_sim
-mips_cpu
-pipeline_check
-pipeline_debug
-pipeline_final
-pipeline_full
-pipeline_fwd
-pipeline_hazard
-pipeline_sim
-pipeline_waveform.vcd
-
-# Waveform files
+# Simulation files
 *.vcd
-*.fst
-*.lxt
-
-# Log files
 *.log
+soc_sim
+alu_test
+control_test
+corner_test
+fpga_check
+pipeline_sim
 
-# Editor/IDE files
+# Editor files
 .vscode/
-.idea/
 *.swp
-*.swo
-*~
-.DS_Store
-
-# Temporary files
-*.tmp
-*.bak
-*.cache
-
-# Build artifacts
-*.o
-*.a
-
-# Simulation dumps
-*.dump
-

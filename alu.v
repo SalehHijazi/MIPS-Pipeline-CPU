@@ -21,6 +21,7 @@
 module alu (
     input  [31:0] a,
     input  [31:0] b,
+    input  [4:0]  shamt, // Shift amount
     input  [3:0]  alu_ctrl,
     output reg [31:0] result,
     output zero
@@ -32,6 +33,8 @@ module alu (
             4'b0000: result = a & b;       // AND
             4'b0001: result = a | b;       // OR
             4'b0111: result = (a < b) ? 32'd1 : 32'd0; // SLT
+            4'b0011: result = b << shamt;  // SLL (Shift rt by shamt)
+            4'b0100: result = b >> shamt;  // SRL (Shift rt by shamt)
             default: result = 32'd0;
         endcase
     end

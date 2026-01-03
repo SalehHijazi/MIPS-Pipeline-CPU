@@ -26,29 +26,35 @@ module mem_wb_reg (
     input reset,
 
     // Control Signals
-    input reg_write_mem, mem_to_reg_mem,
+    input reg_write_mem, 
+    input [1:0] mem_to_reg_mem,
 
     // Data
     input [31:0] read_data_mem,  // Data from Memory
     input [31:0] alu_result_mem, // Data from ALU
     input [4:0] write_reg_mem,
+    input [31:0] pc_plus_4_mem,
 
     // Outputs
-    output reg reg_write_wb, mem_to_reg_wb,
+    output reg reg_write_wb, 
+    output reg [1:0] mem_to_reg_wb,
     output reg [31:0] read_data_wb,
     output reg [31:0] alu_result_wb,
-    output reg [4:0] write_reg_wb
+    output reg [4:0] write_reg_wb,
+    output reg [31:0] pc_plus_4_wb
 );
 
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             reg_write_wb <= 0; mem_to_reg_wb <= 0;
             read_data_wb <= 0; alu_result_wb <= 0; write_reg_wb <= 0;
+            pc_plus_4_wb <= 0;
         end
         else begin
             reg_write_wb <= reg_write_mem; mem_to_reg_wb <= mem_to_reg_mem;
             read_data_wb <= read_data_mem; alu_result_wb <= alu_result_mem;
             write_reg_wb <= write_reg_mem;
+            pc_plus_4_wb <= pc_plus_4_mem;
         end
     end
 endmodule

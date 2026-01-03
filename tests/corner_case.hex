@@ -1,0 +1,12 @@
+// Corner Case Test: Back-to-Back Hazards and Stalls
+// To verify this, we need to check $3 at the end.
+// 1. LW $1, 0($0)    (Load 50 from addr 0)
+8C010000
+// 2. LW $2, 0($0)    (Load 50 from addr 0)
+8C020000
+// 3. ADD $3, $1, $2  (Double Hazard: Needs both $1 and $2. $1 forwardable, $2 needs stall)
+00221820
+// 4. SW $3, 4($0)    (Store 100 to addr 4)
+AC030004
+// 5. BEQ $3, $3, -1  (Infinite Loop)
+1063FFFF

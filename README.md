@@ -1,43 +1,42 @@
-# MIPS 5-Stage Pipelined CPU
+# MIPS 5-Stage Pipelined CPU (SoC Edition)
 
-A complete implementation of a 5-stage pipelined MIPS processor in Verilog with advanced hazard handling, data forwarding, and optimized branch prediction.
+A robust implementation of a 5-stage pipelined MIPS processor in Verilog, featuring a modular System-on-Chip (SoC) architecture, advanced hazard handling, an expanded instruction set, and FPGA-ready design.
 
 ## 🎯 Project Overview
 
-This project implements a fully functional 5-stage pipelined MIPS CPU processor with:
-- **5 Pipeline Stages**: Instruction Fetch (IF), Decode (ID), Execute (EX), Memory (MEM), Writeback (WB)
-- **Data Forwarding**: EX/EX and MEM/EX forwarding to resolve data hazards
-- **Hazard Detection**: Load-Use hazard detection with automatic pipeline stalling
-- **Branch Optimization**: Branch resolution in ID stage (1-cycle penalty vs 3-cycle)
-- **Complete Datapath**: ALU, Register File, Control Unit, Instruction/Data Memory
+This project elevates a standard MIPS education model into a comprehensive engineering artifact. It implements a fully functional 5-stage pipelined CPU with:
+- **5 Pipeline Stages**: Instruction Fetch (IF), Decode (ID), Execute (EX), Memory (MEM), Writeback (WB).
+- **SoC Architecture**: Modular separation between the Core, Instruction Memory, and Data Memory using standard bus interfaces.
+- **Advanced Hazards**: Dedicated units for Load-Use stalling and Data Forwarding (internal & external).
+- **Expanded ISA**: Support for Jumps, Subroutines, Shifts, and Logical immediates.
+- **FPGA Ready**: Synthesis-friendly design with exposed debug ports.
 
 ## ✨ Key Features
 
-### 1. **Advanced Pipeline Architecture**
-- 5-stage pipeline for improved instruction throughput
-- Pipeline registers between each stage (IF/ID, ID/EX, EX/MEM, MEM/WB)
-- Proper signal propagation and control flow
+### 1. **System-on-Chip (SoC) Design**
+- **Modular Core**: `mips_pipeline.v` is a pure IP core with no internal memory instances.
+- **Standard Interfaces**: Uses clean address/data/control bus signals (`i_addr`, `d_addr`, `d_we`, etc.).
+- **Top-Level Wrapper**: `mips_soc.v` integrates the core with memory modules, allowing for easy replacement with Block RAM or Caches.
 
-### 2. **Data Hazard Resolution**
-- **Forwarding Unit**: Automatically forwards data from MEM/WB stages to EX stage
-- Eliminates most data hazard stalls
-- Supports forwarding for both ALU operands (rs and rt)
+### 2. **Expanded Instruction Set (ISA)**
+Now supports a wider range of MIPS instructions:
+- **R-Type**: `ADD`, `SUB`, `AND`, `OR`, `SLT`, **`SLL`**, **`SRL`**
+- **I-Type**: `LW`, `SW`, `ADDI`, `BEQ`, **`ANDI`**, **`ORI`**, **`LUI`**
+- **J-Type**: **`J`** (Jump), **`JAL`** (Jump and Link)
 
-### 3. **Load-Use Hazard Detection**
-- **Hazard Detection Unit**: Detects when a Load Word (LW) is followed by a dependent instruction
-- Automatic 1-cycle pipeline stall
-- Bubble insertion in ID/EX register to prevent incorrect execution
+### 3. **Robust Hazard Resolution**
+- **Forwarding Unit**: Bypasses register file latency (EX/EX and MEM/EX).
+- **Internal Forwarding**: Register file supports simultaneous Write/Read (Write-Through) to resolve WB hazard.
+- **Load-Use Detection**: Automatic 1-cycle stall with bubble insertion.
+- **Branch Optimization**: Branch & Jump resolution in ID stage (1-cycle penalty).
 
-### 4. **Optimized Branch Handling**
-- Branch resolution moved to ID stage (vs traditional MEM stage)
-- Reduces branch penalty from 3 cycles to 1 cycle
-- Forwarding support for branch operands from MEM/WB stages
-- Immediate PC update on branch taken
-
-### 5. **Complete Instruction Set Support**
-- **R-Type**: ADD, SUB, AND, OR, SLT
-- **I-Type**: LW (Load Word), SW (Store Word), ADDI (Add Immediate)
-- **Branch**: BEQ (Branch if Equal)
+### 4. **Testing & Verification**
+- **Dynamic Program Loading**: `inst_mem.v` supports loading hex binaries at runtime (`+MEM_FILE=test.hex`).
+- **Comprehensive Test Suite**:
+  - `tests/alu_tb.v`: Exhaustive ALU unit test.
+  - `tests/control_unit_tb.v`: Signal verification for all opcodes.
+  - `tests/corner_case_tb.v`: Specific stress test for Double Load-Use hazards.
+  - `pipeline_tb.v`: Full system integration test.
 
 ## 📁 Project Structure
 
@@ -45,173 +44,89 @@ This project implements a fully functional 5-stage pipelined MIPS CPU processor 
 MIPS_Pipeline/
 ├── README.md                          # Project Documentation
 ├── LOAD_USE_HAZARD_EXPLANATION.md     # Technical details on stalls
-├── mips_pipeline.v                    # Top-level CPU module
-├── pipeline_tb.v                      # Testbench
-├── alu.v                              # Arithmetic Logic Unit
-├── control_unit.v                     # Control Unit
-├── reg_file.v                         # Register File
-├── data_mem.v                         # Data Memory
-├── inst_mem.v                         # Instruction Memory
-├── hazard_detection_unit.v            # Load-Use Hazard Logic
-├── forwarding_unit.v                  # Data Forwarding Logic
-├── if_id_reg.v                        # Pipeline Register (IF/ID)
-├── id_ex_reg.v                        # Pipeline Register (ID/EX)
-├── ex_mem_reg.v                       # Pipeline Register (EX/MEM)
-└── mem_wb_reg.v                       # Pipeline Register (MEM/WB)
-## 🛠️ Technologies & Tools
-
-- **Hardware Description Language**: Verilog (IEEE 1364)
-- **Simulator**: Icarus Verilog (iverilog)
-- **Waveform Viewer**: GTKWave (for VCD files)
-- **Language**: SystemVerilog-compatible Verilog
+├── mips_soc.v                         # SoC Top-Level (Core + Memory)
+├── mips_pipeline.v                    # Core Processor IP
+├── mips_fpga_top.v                    # FPGA Wrapper (Synthesis Ready)
+├── constraints.xdc                    # FPGA Constraints (Xilinx)
+├── program.hex                        # Default test program
+├── tests/                             # Unit & Integration Tests
+│   ├── alu_tb.v
+│   ├── control_unit_tb.v
+│   ├── corner_case_tb.v
+│   └── corner_case.hex
+├── modules/
+│   ├── alu.v
+│   ├── control_unit.v
+│   ├── reg_file.v
+│   ├── data_mem.v
+│   ├── inst_mem.v
+│   ├── hazard_detection_unit.v
+│   ├── forwarding_unit.v
+│   └── pipeline_registers/            # if_id, id_ex, ex_mem, mem_wb
+```
 
 ## 🚀 Building & Running
 
 ### Prerequisites
+- **Icarus Verilog**: `sudo apt-get install iverilog` (or Windows/Mac equivalent)
+- **GTKWave**: For waveform viewing.
 
-Install Icarus Verilog:
-- **Windows**: Download from [iverilog.icarus.com](http://iverilog.icarus.com/)
-- **Linux**: `sudo apt-get install iverilog`
-- **macOS**: `brew install icarus-verilog`
-
-### Compilation
-
+### Running the Full System Simulation
 ```bash
-# Compile all Verilog files
-iverilog -o pipeline_sim *.v
+# Compile
+iverilog -o soc_sim mips_soc.v mips_pipeline.v pipeline_tb.v \
+    alu.v control_unit.v reg_file.v data_mem.v inst_mem.v \
+    hazard_detection_unit.v forwarding_unit.v \
+    if_id_reg.v id_ex_reg.v ex_mem_reg.v mem_wb_reg.v
+
+# Run with default program
+vvp soc_sim +MEM_FILE=program.hex
 ```
 
-### Simulation
-
+### Running Unit Tests
 ```bash
-# Run the simulation
-vvp pipeline_sim
-```
+# Test ALU
+iverilog -o alu_test tests/alu_tb.v alu.v && vvp alu_test
 
-### View Waveforms (Optional)
+# Test Control Unit
+iverilog -o control_test tests/control_unit_tb.v control_unit.v && vvp control_test
 
-```bash
-# Open the generated VCD file in GTKWave
-gtkwave pipeline_waveform.vcd
+# Test Corner Cases (Load-Use)
+iverilog -o corner_test mips_soc.v mips_pipeline.v tests/corner_case_tb.v ... [all modules]
+vvp corner_test +MEM_FILE=tests/corner_case.hex
 ```
 
 ## 📊 Test Results
 
-The testbench verifies:
+The updated testbench verifies complex scenarios:
 
-1. **Load-Use Hazard Handling**
-   - `lw $1, 0($0)` loads value 50
-   - `add $2, $1, $1` correctly stalls and waits for $1
-   - Final result: `$2 = 100` ✓
+1.  **Extended ISA**: Validates `LUI` loading upper bits, `JAL` saving `PC+4` to `$ra`, and `SLL/SRL` shifting correctly.
+2.  **Corner Cases**: Specifically tests back-to-back `LW` instructions followed by a dependent `ADD`, ensuring the pipeline stalls correctly without data corruption.
 
-2. **Register Verification**
-   - Register `$1 = 50` ✓
-   - Register `$2 = 100` ✓
-
-3. **Branch Loop Verification**
-   - Infinite loop with `beq $1, $1, -1`
-   - PC correctly loops between instruction addresses ✓
-
-### Sample Output
-
-```
-=== VERIFICATION RESULTS ===
-PASS: $1 = 50 (expected 50)
-PASS: $2 = 100 (expected 100)
-
-*** SUCCESS: All register values match expected results! ***
-
-=== BRANCH LOOP VERIFICATION ===
-PASS: PC is in loop range (0x0C-0x10)
-      Branch is working correctly - PC loops between beq instruction addresses
+### Sample Output (Extended Verification)
+```text
+=== EXTENDED INSTRUCTION VERIFICATION ===
+PASS: LUI $1      (Values match expected hex)
+PASS: ORI $2
+PASS: ANDI $3
+PASS: SLL $4
+PASS: SRL $5
+PASS: JAL RA      ($31 loaded with return address)
+PASS: JAL Target  (Subroutine executed correctly)
+PASS: Jump Back   (Return from subroutine successful)
 ```
 
 ## 🏗️ Architecture Details
 
-### Pipeline Stages
-
-1. **IF (Instruction Fetch)**
-   - Fetches instruction from instruction memory
-   - Calculates PC + 4
-   - Handles branch target updates
-
-2. **ID (Instruction Decode)**
-   - Decodes instruction opcode and funct fields
-   - Reads register file (rs, rt)
-   - Generates control signals
-   - **Branch resolution** (optimized to ID stage)
-   - Forwarding for branch operands
-
-3. **EX (Execute)**
-   - ALU operations
-   - Address calculation for memory operations
-   - Data forwarding from MEM/WB stages
-
-4. **MEM (Memory)**
-   - Load Word (LW): Read from data memory
-   - Store Word (SW): Write to data memory
-
-5. **WB (Writeback)**
-   - Selects data source (memory or ALU)
-   - Writes result back to register file
+### SoC Interfaces
+The core now exposes standard interfaces, making it "IP-Core" ready:
+- **Instruction Interface**: `i_addr[31:0]`, `i_rdata[31:0]`
+- **Data Interface**: `d_addr[31:0]`, `d_wdata[31:0]`, `d_we`, `d_re`, `d_rdata[31:0]`
+- **Debug Interface**: `pc_out`, `alu_result_out`
 
 ### Hazard Handling
-
-#### Data Hazards
-- **Forwarding**: Automatically forwards data from MEM/WB to EX stage
-- **Priority**: MEM stage forwarding takes precedence over WB stage
-
-#### Load-Use Hazards
-- **Detection**: Compares EX stage destination with ID stage sources
-- **Action**: 1-cycle stall + bubble insertion in ID/EX register
-
-#### Control Hazards
-- **Branch Resolution**: Happens in ID stage (1-cycle penalty)
-- **Flush**: IF/ID register flushed when branch taken
-
-## 📈 Performance Optimizations
-
-1. **Branch in ID Stage**: Reduces branch penalty from 3 cycles to 1 cycle
-2. **Data Forwarding**: Eliminates most data hazard stalls
-3. **Efficient Pipeline**: 5 stages provide good balance between complexity and performance
-
-## 🎓 Learning Outcomes
-
-This project demonstrates:
-
-- **Computer Architecture**: Deep understanding of pipelined processor design
-- **Hardware Design**: Verilog HDL proficiency
-- **Hazard Handling**: Advanced techniques for pipeline optimization
-- **System Integration**: Combining multiple modules into a complete system
-- **Testing & Verification**: Comprehensive testbench design
-
-## 📝 Instruction Set
-
-| Instruction | Format | Opcode | Description |
-|------------|--------|--------|-------------|
-| ADD | R-Type | 0x00 | Add two registers |
-| SUB | R-Type | 0x00 | Subtract two registers |
-| AND | R-Type | 0x00 | Bitwise AND |
-| OR | R-Type | 0x00 | Bitwise OR |
-| SLT | R-Type | 0x00 | Set Less Than |
-| LW | I-Type | 0x23 | Load Word from memory |
-| SW | I-Type | 0x2B | Store Word to memory |
-| BEQ | I-Type | 0x04 | Branch if Equal |
-| ADDI | I-Type | 0x08 | Add Immediate |
-
-## 🔍 Code Quality
-
-- **Comprehensive Comments**: All modules include detailed header comments
-- **Consistent Naming**: Stage-suffixed wire names (e.g., `instruction_if`, `alu_result_ex`)
-- **Modular Design**: Clean separation of concerns
-- **Well-Documented**: Inline comments explain complex logic
-
-## 📚 Additional Documentation
-
-See `LOAD_USE_HAZARD_EXPLANATION.md` for a detailed explanation of:
-- Load-Use hazard detection mechanism
-- Cycle-by-cycle execution trace
-- Stall and flush signal behavior
+- **Double Data Hazards**: Correctly handles forwarding from WB while stalling for MEM simultaneously.
+- **Control Hazards**: `J` and `JAL` update PC immediately in ID stage; branch logic utilizes dedicated comparator with forwarding.
 
 ## 👨‍💻 Author
 
@@ -221,11 +136,8 @@ Computer Engineering Student / Hardware Engineer
 ---
 
 **Note for Employers**: This project demonstrates proficiency in:
-- Digital design and computer architecture
-- Verilog HDL programming
-- Pipeline optimization techniques
-- System-level hardware design
-- Testbench development and verification
-
-For questions or collaboration opportunities, please reach out!
+- **RTL Design**: Writing modular, synthesizable Verilog.
+- **Verification**: Creating self-checking testbenches and unit tests.
+- **Computer Architecture**: Implementing complex pipelines, hazard resolution, and bus interfaces.
+- **Tooling**: Script-based simulation and FPGA constraints.
 

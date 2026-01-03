@@ -30,17 +30,25 @@ module reg_file (
     output [31:0] read_data2
 );
     reg [31:0] registers [0:31];
-    integer i;
 
+    integer i;
     initial begin
-        for (i = 0; i < 32; i = i + 1) registers[i] = 0;
+        for (i = 0; i < 32; i = i + 1)
+            registers[i] = 0;
     end
 
     always @(posedge clk) begin
-        if (reg_write_en && write_reg != 0)
+        if (reg_write_en && write_reg != 0) begin
             registers[write_reg] <= write_data;
+        end
     end
 
-    assign read_data1 = (read_reg1 == 0) ? 0 : registers[read_reg1];
-    assign read_data2 = (read_reg2 == 0) ? 0 : registers[read_reg2];
+    // Internal Forwarding (Write-Through)
+    // If reading the register currently being written, output the new data
+    assign read_data1 = (read_reg1 == 0) ? 0 : 
+                        ((reg_write_en && (read_reg1 == write_reg)) ? write_data : registers[read_reg1]);
+                        
+    assign read_data2 = (read_reg2 == 0) ? 0 : 
+                        ((reg_write_en && (read_reg2 == write_reg)) ? write_data : registers[read_reg2]);
+
 endmodule

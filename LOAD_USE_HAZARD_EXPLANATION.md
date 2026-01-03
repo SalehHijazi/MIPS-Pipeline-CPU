@@ -127,3 +127,29 @@ The testbench (`pipeline_tb.v`) verifies:
 - Register $2 contains 100
 - Pipeline correctly handles the stall and continues execution
 
+## Advanced Corner Case: Double Load-Use Hazard
+
+The enhanced test suite now verifies a specific "Double Load-Use" scenario, which is a common failure point in simpler forwarding implementations.
+
+### Scenario
+```asm
+1. lw  $1, 0($0)   # Load into $1
+2. lw  $2, 0($0)   # Load into $2
+3. add $3, $1, $2  # Uses BOTH $1 (from instruction 1) and $2 (from instruction 2)
+```
+
+### The Challenge
+When `ADD` reaches the Decode/Execute stage:
+- **Operand $1**: Is in the Writeback (WB) stage. It requires **Forwarding** (from WB to ID or EX).
+- **Operand $2**: Is in the Memory (MEM) stage. It requires a **Stall**.
+
+### Correct Behavior
+1. The Hazard Unit detects that `$2` (in MEM) causes a hazard.
+2. The pipeline **Stalls** for 1 cycle.
+3. During the stall, `$1` completes Writeback and updates the register file.
+4. After the stall:
+   - `$1` is read normally from the Register File (or forwarded internally if using Write-Through).
+   - `$2` is now in the WB stage and is **Forwarded** to the EX stage.
+   
+This ensures that `ADD` receives the correct values for both operands, even though they came from consecutive loads. The project's `tests/corner_case_tb.v` specifically validates this behavior.
+
